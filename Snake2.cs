@@ -5,8 +5,10 @@ using UnityEngine.SocialPlatforms.Impl;
 using MySql.Data.MySqlClient;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 public class Snake2 : MonoBehaviour
-{   //public MySQLTest mySqLTEST;
+{
+    private string apiUrl = "http://127.0.0.1:5000/api/games";
     public gameaudio gameaudio;
     public UI gameUI;
     public name inputsql;
@@ -58,7 +60,8 @@ public class Snake2 : MonoBehaviour
     
         if (collision.CompareTag("wall"))
         {
-            sqlinput(nameInputField.text, scoreText.text);
+            SendGameScore(nameInputField.text, int.Parse(scoreText.text));
+            //sqlinput(nameInputField.text, scoreText.text);
             ResetStage();
             gameaudio.Replay();
            
@@ -76,7 +79,53 @@ public class Snake2 : MonoBehaviour
         bodies.Add(transform);
         gameUI.ResetScore();
     }
-    void sqlinput(string name, string score)
+    
+
+    public void SendGameScore(string playerName, int score)
+    {
+        StartCoroutine(SendScoreCoroutine(playerName, score));
+    }
+    [System.Serializable]
+    public class GameScore
+    {
+        public string snakename;
+        public int score;
+    }
+
+    private IEnumerator SendScoreCoroutine(string playerName, int score)
+    {
+        // 創建 GameScore 物件並賦值
+        GameScore gameScore = new GameScore();
+        gameScore.snakename = playerName;
+        gameScore.score = score;
+
+        // 使用 JsonUtility 將物件轉換為 JSON 格式
+        string jsonData = JsonUtility.ToJson(gameScore);
+        Debug.Log("Sending JSON data: " + jsonData);
+        byte[] postData = System.Text.Encoding.UTF8.GetBytes(jsonData);
+
+        // 發送 POST 請求
+        using (UnityWebRequest request = new UnityWebRequest(apiUrl, "POST"))
+        {
+            request.uploadHandler = new UploadHandlerRaw(postData);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            // 發送請求
+            yield return request.SendWebRequest();
+
+            // 檢查回應結果
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log("Score uploaded successfully: " + request.downloadHandler.text);
+            }
+            else
+            {
+                Debug.LogError("Error uploading score: " + request.error);
+            }
+        }
+    }
+    void sqlinput(string name, string score)//將分數直接傳到mysql
     {
         string server = "localhost";
         string database = "sql_tutorial";
@@ -104,4 +153,4 @@ public class Snake2 : MonoBehaviour
 
     }
 }
-
+// 用來表示要送到 API 的資料
