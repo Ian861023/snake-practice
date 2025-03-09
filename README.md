@@ -10,3 +10,4 @@
 upload scroe and name to mysql
 ![2](https://github.com/user-attachments/assets/caf5aef9-7314-461f-a4d9-b2159bfd16cf)
 
+check score in html![4](https://github.com/user-attachments/assets/29ff45ab-68e6-4b62-ba3d-6b565d927fb0)
