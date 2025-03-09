@@ -1,14 +1,14 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify,render_template
 import mysql.connector
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 # 連接 MySQL 資料庫
 db = mysql.connector.connect(
     host="localhost",
-    user="root",       # 你的 MySQL 帳號
-    password="@9861023", # 你的 MySQL 密碼
-    database="sql_tutorial"  # 你的資料庫名稱
+    user="root",       # 你的 MySQL  name
+    password="@9861023", # 你的 MySQL password
+    database="sql_tutorial"  #database name
 )
 
 @app.route('/api/games', methods=['POST'])
@@ -30,6 +30,15 @@ def add_game_score():
     db.commit()
 
     return jsonify({"message": "Score added successfully!"}), 201
+@app.route('/')
+def show_scores():
+    # 資料庫獲取分數資料
+    cursor = db.cursor()
+    cursor.execute("SELECT snakename, score FROM snakescore")
+    scores = cursor.fetchall()
+    
+    # 傳遞資料給 HTML 頁面
+    return render_template('index.html', scores=scores)
 
 # 啟動 Flask 伺服器
 if __name__ == '__main__':

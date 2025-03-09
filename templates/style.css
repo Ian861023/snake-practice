@@ -1,0 +1,16 @@
+h1{color:red;}
+/* 設定 ul 和 li 的顯示方式 */
+ul {
+    list-style-type: none; /* 移除預設的項目符號 */
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    display: inline-block; /* 使 li 項目水平排列 */
+    width: 150px; /* 控制寬度 */
+}
+
+strong {
+    font-size: 18px;
+}

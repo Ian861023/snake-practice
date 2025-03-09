@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>snake score</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1">
+    </head>
+    <body>
+        <h1>snake score</h1>
+        <ul>
+            <li><strong>姓名</strong></li>
+            <li><strong>成績</strong></li>
+        </ul>
+        
+        {% for score in scores %}
+        <ul class="score-list">
+            <li>{{ score[0] }}</li>
+            <li>{{ score[1] }}</li>
+        </ul>
+        {% endfor %}
+    </body>
+</html>
